@@ -64,7 +64,7 @@ def create_user():
             interests=data.get('interests', []),
             availability=data.get('availability', {}),
             image_id=image_id,
-            educationLevel=data.get('educationLevel'),
+            education_level=data.get('education_level'),
             preference=data.get('preference'),
             goal=data.get('goal')
         )
@@ -94,7 +94,7 @@ def update_user(user_id):
         if 'availability' in data:
             user.availability = data['availability']
         if 'education_level' in data:
-            user.educationLevel = data['education_level']
+            user.education_level = data['education_level']
         if 'preference' in data:
             user.preference = data['preference']
         if 'goal' in data:
