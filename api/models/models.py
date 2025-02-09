@@ -17,10 +17,11 @@ class User(db.Model):
     availability = db.Column(JSON, default=dict)
     is_organizer = db.Column(db.Boolean, default=False)
     events = db.relationship('Event', secondary=participants, backref=db.backref('participants', lazy=True))
+    image_id = db.Column(db.Integer, db.ForeignKey('image.id'), nullable=True)
 
     def __repr__(self):
-        return f'<User id={self.id} username={self.username} created_at={self.created_at} email={self.email} interests={self.interests} availability={self.availability} is_organizer={self.is_organizer}>'   
-     
+        return f'<User id={self.id} username={self.username} created_at={self.created_at} email={self.email} interests={self.interests} availability={self.availability} is_organizer={self.is_organizer} image_id={self.image_id}>'  # Update this line
+
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
@@ -29,8 +30,14 @@ class Event(db.Model):
     time = db.Column(db.DateTime, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    image_id = db.Column(db.Integer, db.ForeignKey('image.id'), nullable=True)
 
     user = db.relationship('User', backref=db.backref('events_created', lazy=True))
 
     def __repr__(self):
-        return f'<Event id={self.id} name={self.name} location={self.location} time={self.time} user_id={self.user_id}>'
+        return f'<Event id={self.id} name={self.name} location={self.location} time={self.time} user_id={self.user_id} image_id={self.image_id}>'  # Update this line
+
+class Image(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(255), nullable=False)
+    data = db.Column(db.LargeBinary, nullable=False)
