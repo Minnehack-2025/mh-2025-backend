@@ -17,7 +17,7 @@
 - **Request Body:**
   - `username` (string): The username of the user.
   - `email` (string): The email of the user.
-  - `password` (string): The password of the user.
+  - `password` (string): The password of the user. (before hash)
   - `interests` (JSON): The interests of the user (optional).
   - `availability` (JSON): The availability of the user (optional).
   - `image` (file): The profile image of the user (optional).
@@ -32,7 +32,7 @@
 - **Request Body:**
   - `username` (string): The username of the user (optional).
   - `email` (string): The email of the user (optional).
-  - `password` (string): The password of the user (optional).
+  - `password` (string): The password of the user (optional, before hash).
   - `interests` (JSON): The interests of the user (optional).
   - `availability` (JSON): The availability of the user (optional).
   - `image` (file): The profile image of the user (optional).
@@ -51,7 +51,7 @@
 ### Login User
 - **URL:** `/users/login`
 - **Method:** `POST`
-- **Description:** Login a user.
+- **Description:** Login a user by comparing password hashes.
 - **Request Body:**
   - `email` (string): The email of the user.
   - `password` (string): The password of the user.
