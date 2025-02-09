@@ -16,7 +16,8 @@ def get_events():
     try:
         number = request.args.get('number', default=10, type=int)
         events = Event.query.limit(number).all()
-        return jsonify([event.__repr__() for event in events])
+        events_list = [event.to_dict() for event in events]  # Assuming you have a to_dict method in your Event model
+        return jsonify(events_list), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -49,7 +50,7 @@ def create_event():
         )
         db.session.add(new_event)
         db.session.commit()
-        return jsonify(new_event.__repr__()), 201
+        return jsonify(new_event.to_dict()), 201
     except Exception as e:
         print("Error:", str(e))
         return jsonify({"error": str(e)}), 500
@@ -58,10 +59,10 @@ def create_event():
 def get_event(event_id):
     try:
         event = Event.query.get_or_404(event_id)
-        return jsonify(event.__repr__())
+        return jsonify(event.to_dict()), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
+
 @events_bp.route('/events/<int:event_id>', methods=['PUT'])
 def update_event(event_id):
     try:
@@ -85,7 +86,7 @@ def update_event(event_id):
             event.image_id = new_image.id
 
         db.session.commit()
-        return jsonify(event.__repr__())
+        return jsonify(event.to_dict()), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -96,5 +97,15 @@ def delete_event(event_id):
         db.session.delete(event)
         db.session.commit()
         return '', 204
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@events_bp.route('/events/search', methods=['GET'])
+def search_events():
+    try:
+        name = request.args.get('name', default='', type=str)
+        events = Event.query.filter(Event.name.ilike(f'%{name}%')).all()
+        events_list = [event.to_dict() for event in events]  # Assuming you have a to_dict method in your Event model
+        return jsonify(events_list), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
