@@ -94,7 +94,6 @@
   - `name` (string): The name of the event.
   - `description` (string): The description of the event (optional).
   - `location` (string): The location of the event.
-  - `time` (string): The time of the event in ISO format.
   - `user_id` (int): The ID of the user creating the event.
   - `image` (file): The image of the event (optional).
 - **Response:**

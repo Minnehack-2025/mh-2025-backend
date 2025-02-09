@@ -44,6 +44,17 @@ class Event(db.Model):
 
     user = db.relationship('User', backref=db.backref('events_created', lazy=True))
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'location': self.location,
+            'time': self.time.isoformat(),
+            'user_id': self.user_id,
+            'image_id': self.image_id
+        }
+
     def __repr__(self):
         return f'<Event id={self.id} name={self.name} location={self.location} time={self.time} user_id={self.user_id} image_id={self.image_id}>'
 
