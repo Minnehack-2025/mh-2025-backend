@@ -19,9 +19,12 @@ class User(db.Model):
     availability = db.Column(JSON, default=dict)
     events = db.relationship('Event', secondary=participants, backref=db.backref('participants', lazy=True))
     image_id = db.Column(db.Integer, db.ForeignKey('image.id'), nullable=True)
+    education_level = db.Column(db.String(50), nullable=True)
+    preference = db.Column(db.String(50), nullable=True)
+    goal = db.Column(db.String(255), nullable=True)
 
     def __repr__(self):
-        return f'<User id={self.id} username={self.username} created_at={self.created_at} email={self.email} interests={self.interests} availability={self.availability} image_id={self.image_id}>'
+        return f'<User id={self.id} username={self.username} created_at={self.created_at} email={self.email} interests={self.interests} availability={self.availability} image_id={self.image_id} education_level={self.education_level} preference={self.preference} goal={self.goal}>'
     
     def set_password(self, password):
         self.password = generate_password_hash(password, method='pbkdf2:sha256')
