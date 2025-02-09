@@ -23,7 +23,12 @@ def get_events():
 @events_bp.route('/events', methods=['POST'])
 def create_event():
     try:
-        data = request.form
+        # Log the incoming request data
+        print("Request form data:", request.form)
+        print("Request files:", request.files)
+
+        # Parse the request data
+        data = request.form.to_dict()
         file = request.files.get('image')
         image_id = None
         if file and allowed_file(file.filename):
@@ -33,18 +38,20 @@ def create_event():
             db.session.commit()
             image_id = new_image.id
 
+        # Create the new event
         new_event = Event(
             name=data['name'],
             description=data.get('description'),
             location=data['location'],
-            time=datetime.strptime(data['time'], '%Y-%m-%dT%H:%M:%S'),
-            user_id=data['user_id'],
+            time=datetime.now(),
+            user_id=int(data['user_id']),
             image_id=image_id
         )
         db.session.add(new_event)
         db.session.commit()
         return jsonify(new_event.__repr__()), 201
     except Exception as e:
+        print("Error:", str(e))
         return jsonify({"error": str(e)}), 500
 
 @events_bp.route('/events/<int:event_id>', methods=['GET'])
