@@ -51,3 +51,12 @@ class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(255), nullable=False)
     data = db.Column(db.LargeBinary, nullable=False)
+
+class Statistics(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    day = db.Column(db.String(10), nullable=False)
+    time_slot = db.Column(db.Integer, nullable=False)
+    user_ids = db.Column(JSON, default=list)
+
+    def __repr__(self):
+        return f'<Statistics id={self.id} day={self.day} time_slot={self.time_slot} user_ids={self.user_ids}>'
