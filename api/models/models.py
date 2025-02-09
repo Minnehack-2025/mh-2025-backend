@@ -10,7 +10,7 @@ participants = db.Table('participants',
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), nullable=False, unique=True)
+    username = db.Column(db.String(90), nullable=False, unique=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     interests = db.Column(JSON, default=list)
