@@ -21,6 +21,9 @@
   - `interests` (JSON): The interests of the user (optional).
   - `availability` (JSON): The availability of the user (optional).
   - `image` (file): The profile image of the user (optional).
+  - `educationLevel` (string): The education level of the user (optional).
+  - `preference` (string): The preference of the user (optional).
+  - `goal` (string): The goal of the user (optional).
 - **Response:**
   - `201 Created`: Returns the created user representation.
   - `500 Internal Server Error`: Returns an error message.
@@ -36,6 +39,9 @@
   - `interests` (JSON): The interests of the user (optional).
   - `availability` (JSON): The availability of the user (optional).
   - `image` (file): The profile image of the user (optional).
+  - `educationLevel` (string): The education level of the user (optional).
+  - `preference` (string): The preference of the user (optional).
+  - `goal` (string): The goal of the user (optional).
 - **Response:**
   - `200 OK`: Returns the updated user representation.
   - `500 Internal Server Error`: Returns an error message.

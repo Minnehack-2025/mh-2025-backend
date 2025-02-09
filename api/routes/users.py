@@ -37,7 +37,10 @@ def create_user():
             email=data['email'],
             interests=data.get('interests', []),
             availability=data.get('availability', {}),
-            image_id=image_id
+            image_id=image_id,
+            educationLevel=data.get('educationLevel'),
+            preference=data.get('preference'),
+            goal=data.get('goal')
         )
         new_user.set_password(data['password'])
         db.session.add(new_user)
@@ -55,23 +58,28 @@ def update_user(user_id):
             user.username = data['username']
         if 'email' in data:
             user.email = data['email']
-        if 'interests' in data:
-            user.interests = data.get('interests', user.interests)
-        if 'availability' in data:
-            user.availability = data.get('availability', user.availability)
         if 'password' in data:
             user.set_password(data['password'])
-
-        file = request.files.get('image')
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            new_image = Image(filename=filename, data=file.read())
-            db.session.add(new_image)
-            db.session.commit()
-            user.image_id = new_image.id
-
+        if 'interests' in data:
+            user.interests = data['interests']
+        if 'availability' in data:
+            user.availability = data['availability']
+        if 'education_level' in data:
+            user.educationLevel = data['education_level']
+        if 'preference' in data:
+            user.preference = data['preference']
+        if 'goal' in data:
+            user.goal = data['goal']
+        if 'image' in request.files:
+            file = request.files['image']
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                new_image = Image(filename=filename, data=file.read())
+                db.session.add(new_image)
+                db.session.commit()
+                user.image_id = new_image.id
         db.session.commit()
-        return jsonify(user.__repr__())
+        return jsonify(user.__repr__()), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
