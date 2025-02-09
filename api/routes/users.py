@@ -3,6 +3,7 @@ from werkzeug.utils import secure_filename
 from io import BytesIO
 from api.models.models import db, User, Image, Statistics
 from werkzeug.security import generate_password_hash, check_password_hash
+import json
 
 users_bp = Blueprint('users', __name__)
 
@@ -48,7 +49,7 @@ def get_users():
 @users_bp.route('/users', methods=['POST'])
 def create_user():
     try:
-        data = request.form
+        data = request.form.to_dict()
         file = request.files.get('image')
         image_id = None
         if file and allowed_file(file.filename):
@@ -58,11 +59,13 @@ def create_user():
             db.session.commit()
             image_id = new_image.id
 
+        availability = json.loads(data.get('availability', '{}'))
+
         new_user = User(
             username=data['username'],
             email=data['email'],
-            interests=data.get('interests', []),
-            availability=data.get('availability', {}),
+            interests=json.loads(data.get('interests', '[]')),
+            availability=availability,
             image_id=image_id,
             education_level=data.get('education_level'),
             preference=data.get('preference'),
@@ -81,7 +84,7 @@ def create_user():
 @users_bp.route('/users/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
     try:
-        data = request.form
+        data = request.form.to_dict()
         user = User.query.get_or_404(user_id)
         if 'username' in data:
             user.username = data['username']
@@ -90,9 +93,9 @@ def update_user(user_id):
         if 'password' in data:
             user.set_password(data['password'])
         if 'interests' in data:
-            user.interests = data['interests']
+            user.interests = json.loads(data['interests'])
         if 'availability' in data:
-            user.availability = data['availability']
+            user.availability = json.loads(data['availability'])
         if 'education_level' in data:
             user.education_level = data['education_level']
         if 'preference' in data:
