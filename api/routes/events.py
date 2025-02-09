@@ -16,7 +16,7 @@ def get_events():
     try:
         number = request.args.get('number', default=10, type=int)
         events = Event.query.limit(number).all()
-        return jsonify([event.__repr__()] for event in events)
+        return jsonify([event.__repr__() for event in events])
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
