@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from api.models import db, User, Event
+from api.models.models import db, Event
 from datetime import datetime
 
 events_bp = Blueprint('events', __name__)
