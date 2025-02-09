@@ -66,6 +66,14 @@
   - `401 Unauthorized`: Returns an error message for invalid credentials.
   - `500 Internal Server Error`: Returns an error message.
 
+### Get Statistics
+- **URL:** `/users/statistics`
+- **Method:** `GET`
+- **Description:** Retrieve the availability statistics.
+- **Response:**
+  - `200 OK`: Returns a dictionary with the availability statistics.
+  - `500 Internal Server Error`: Returns an error message.
+
 ## Events
 
 ### Get All Events
