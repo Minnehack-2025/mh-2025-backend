@@ -1,6 +1,7 @@
 from . import db
 from datetime import datetime, timezone
 from sqlalchemy.dialects.postgresql import JSON
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # association table for the many-to-many relationship between user and event
 participants = db.Table('participants',
@@ -12,15 +13,21 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(90), nullable=False, unique=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(128), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     interests = db.Column(JSON, default=list)
     availability = db.Column(JSON, default=dict)
-    is_organizer = db.Column(db.Boolean, default=False)
     events = db.relationship('Event', secondary=participants, backref=db.backref('participants', lazy=True))
     image_id = db.Column(db.Integer, db.ForeignKey('image.id'), nullable=True)
 
     def __repr__(self):
-        return f'<User id={self.id} username={self.username} created_at={self.created_at} email={self.email} interests={self.interests} availability={self.availability} is_organizer={self.is_organizer} image_id={self.image_id}>'  # Update this line
+        return f'<User id={self.id} username={self.username} created_at={self.created_at} email={self.email} interests={self.interests} availability={self.availability} image_id={self.image_id}>'
+    
+    def set_password(self, password):
+        self.password = generate_password_hash(password, method='pbkdf2:sha256')
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -35,7 +42,7 @@ class Event(db.Model):
     user = db.relationship('User', backref=db.backref('events_created', lazy=True))
 
     def __repr__(self):
-        return f'<Event id={self.id} name={self.name} location={self.location} time={self.time} user_id={self.user_id} image_id={self.image_id}>'  # Update this line
+        return f'<Event id={self.id} name={self.name} location={self.location} time={self.time} user_id={self.user_id} image_id={self.image_id}>'
 
 class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
