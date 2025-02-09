@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from werkzeug.utils import secure_filename
 from io import BytesIO
 from api.models.models import db, User, Image
+from werkzeug.security import generate_password_hash, check_password_hash
 
 users_bp = Blueprint('users', __name__)
 
@@ -38,6 +39,7 @@ def create_user():
             availability=data.get('availability', {}),
             image_id=image_id
         )
+        new_user.set_password(data['password'])
         db.session.add(new_user)
         db.session.commit()
         return jsonify(new_user.__repr__()), 201
@@ -57,6 +59,8 @@ def update_user(user_id):
             user.interests = data.get('interests', user.interests)
         if 'availability' in data:
             user.availability = data.get('availability', user.availability)
+        if 'password' in data:
+            user.set_password(data['password'])
 
         file = request.files.get('image')
         if file and allowed_file(file.filename):
@@ -68,6 +72,18 @@ def update_user(user_id):
 
         db.session.commit()
         return jsonify(user.__repr__())
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@users_bp.route('/users/login', methods=['POST'])
+def login_user():
+    try:
+        data = request.form
+        user = User.query.filter_by(email=data['email']).first()
+        if user and user.check_password(data['password']):
+            return jsonify({"message": "Login successful"}), 200
+        else:
+            return jsonify({"error": "Invalid username or password"}), 401
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
